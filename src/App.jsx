@@ -1,46 +1,27 @@
-import React, { Component, memo, PureComponent } from 'react';
+import React, { Component, useState } from 'react';
 import './App.css';
 
-// const Foo = memo(function Foo(props) {
-//   console.log('Foo Render')
-//   return <div>{props.person.name}</div>
-// })
+//   
 
-// function Foo(props) {
-//   console.log('Foo Render')
-//   return <div>{props.person.name}</div>
-// }
-
-class Foo extends PureComponent { 
+function App(props){
+  // const defaultValue = props.defaultValue || 0, 每次渲染都会执行，没必要
+  const [count, setCount] = useState(()=>{
+    console.log('init default value')
+    return props.defaultValue || 1
+  })
+  const [name, setName] = useState('xiaoguoping')
   
-}
- 
-
-class App extends Component { 
-  state = {
-    count: 1,
-    person: {
-      name: 'xiaoguoping',
-      age: 18
-    }
-  }
-
-  render() { 
-    const { person, count } = this.state
-    
-    return (
+  return (
       <div>
         <button
           type="button"
-          onClick={() => this.setState({ count: this.state.count + 1 })}>
+          onClick={() => setCount(count + 1)}>
           Add
         </button>
-        {count}
-        <Foo person={person}></Foo>
+        count:{count},  name:{name}
       </div>
     )
-  }
-  
+
 }
 
 
