@@ -1,50 +1,43 @@
-import React, { Component, createContext } from 'react';
+import React, { Component, memo, PureComponent } from 'react';
 import './App.css';
 
-const BatteryContext = createContext()
+// const Foo = memo(function Foo(props) {
+//   console.log('Foo Render')
+//   return <div>{props.person.name}</div>
+// })
 
-class Leaf extends Component { 
-  static contextType = BatteryContext
+// function Foo(props) {
+//   console.log('Foo Render')
+//   return <div>{props.person.name}</div>
+// }
 
-  render() { 
-    const battery = this.context
-    return (
-      <h1>Battery: {battery}</h1>
-    )
-  }
+class Foo extends PureComponent { 
+  
 }
-
-class Middle extends Component { 
-  render() { 
-    return <Leaf />
-  }
-}
+ 
 
 class App extends Component { 
   state = {
-    online: false,
-    battery: 60
+    count: 1,
+    person: {
+      name: 'xiaoguoping',
+      age: 18
+    }
   }
 
   render() { 
-    const { battery, online } = this.state
+    const { person, count } = this.state
     
     return (
-      <BatteryContext.Provider value={battery}>
-          <button
-            type="button"
-            onClick={() => this.setState({ battery: battery + 1 })}>
-            Add
-          </button>
-
-          <button
-            type="button"
-            onClick={() => this.setState({ online: !online })}>
-            Switch
-          </button>
-
-          <Middle></Middle>
-      </BatteryContext.Provider>
+      <div>
+        <button
+          type="button"
+          onClick={() => this.setState({ count: this.state.count + 1 })}>
+          Add
+        </button>
+        {count}
+        <Foo person={person}></Foo>
+      </div>
     )
   }
   
