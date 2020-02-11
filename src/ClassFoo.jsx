@@ -2,12 +2,12 @@ import React, { Component } from "react";
 
 class Foo extends Component { 
   state = {
-    size: [widow.innerWidth, window.innerHeight]
+    size: [window.innerWidth, window.innerHeight]
   }
 
   onResize = ()=>{
     this.setState({
-      size: [widow.innerWidth, window.innerHeight]
+      size: [window.innerWidth, window.innerHeight]
     })
   }
 
