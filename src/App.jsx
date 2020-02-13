@@ -1,43 +1,22 @@
-import React, { useState, useMemo, useRef, useCallback, useEffect, PureComponent } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import './App.css';
 
-// const Counter = memo(function Counter(props) {
-//   console.log('Counter click')
-//   return (
-//     <h1 onClick={props.onClick}>useContext:{props.count}</h1>
-//   )
-// })
+// function Counter (props){
+//     return (
+//       <h1>useContext:{props.count}</h1>
+//     )
+// }
 
-class Counter extends PureComponent { 
-
-  speak() { 
-    console.log(`now count is ${this.props.count}`)
-  }
-  render() { 
-    const { props } = this
-    return (
-      <h1 onClick={props.onClick}>useContext:{props.count}</h1>
-    )
-  }
+function useCounter(count) { 
+  const size = useSize()
+  return (
+    <h1>count:{count}--{size.width}x{size.heigth}</h1>
+  )
 }
 
-function App() {
-  const [count, setCount] = useState(0)
-  const [clickCount, setClickCount] = useState(0)
-  // 只有在count===3前后两次变化的时候依赖项才会变化，double才会重新计算
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const double = useMemo(() => count * 2, [count === 3])
-  
-  const counterRef = useRef()
-  let it = useRef()
-
-  const onClick = useCallback(() => { 
-    console.log('click')
-    // 一般事件都会改变状态的
-    setClickCount((clickCount) => clickCount + 1)
-    // console.log(counterRef.current)
-    counterRef.current.speak()
-  }, [counterRef]) 
+function useCount(defaultCount) { 
+  const [count, setCount] = useState(defaultCount)
+  const it = useRef()
   
   useEffect(() => {
     it.current = setInterval(() => { 
@@ -50,7 +29,40 @@ function App() {
       clearInterval(it.current)
     }
   })
+
+  return [count, setCount]
+}
+
+function useSize() {
+  const [size, setSize] = useState({
+    width: document.documentElement.clientWidth,
+    heigth: document.documentElement.clientHeight
+  })
+
+  const onResize = useCallback(() => {
+    setSize({
+      width: document.documentElement.clientWidth,
+      heigth: document.documentElement.clientHeight
+    })
+  },[])
+
+  useEffect(() => { 
+    window.addEventListener('resize', onResize, false)
+    
+    return () => { 
+      window.removeEventListener('resize', onResize, false)
+    }
+  }, [onResize])
   
+  return size
+}
+
+function App() {
+  const [count, setCount] = useCount(0)
+  const Counter = useCounter(count)
+  const size = useSize()
+
+
   return (
       <div>
         <button
@@ -58,12 +70,10 @@ function App() {
           onClick={() => setCount(count + 1)}>
           Add
         </button>
-      <Counter ref={counterRef} onClick={onClick} count={double}></Counter>
-      count:{count}, double:{double},  clickCount:{clickCount}
+      {Counter}
+      count:{count} -- {size.width}x{size.heigth}
       </div>
     )
-
 }
-
 
 export default App;
