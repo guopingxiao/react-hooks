@@ -1,10 +1,16 @@
 const Koa = require('koa')
 const router = require('koa-router')();
+const cityData = require('./api/citylist.json')
 
 const app = new Koa()
 
-router.get('/', async function (ctx, next) { 
-  ctx.body = 'hello world'
+
+
+router.get('/api/citylist', async function (ctx, next) { 
+  ctx.body = {
+    code: 200,
+    cityData: cityData
+  }
 })
 
 router.get('/json', async function (ctx, next) { 
@@ -12,6 +18,10 @@ router.get('/json', async function (ctx, next) {
     text: 'hello world',
     type: 'json'
   }
+})
+
+router.get('/', async function (ctx, next) { 
+  ctx.body = 'hello world'
 })
 
 

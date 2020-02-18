@@ -21,10 +21,6 @@ export function setTo(to) {
   }
 }
 
-export function setIsCitySelectorVisible() { 
-
-}
-
 export function setIsLoadingCityData(isLoadingCityData) { 
   return {
     type: ACTION_SET_IS_LOADING_CITY_DATA,
@@ -85,6 +81,8 @@ export function setSelectCity(city) {
     } else { 
       dispatch(setTo(city))
     }
+
+    dispatch(hideCitySelector())
   }
 }
 
@@ -103,10 +101,43 @@ export function hideDateSelector() {
 }
 
 /* 交换城市 */
-export function exchangeFromTo() { 
-  return (dispatch, getState) => { 
-    const { from, to } = getState()
-    dispatch(setFrom(to))
-    dispatch(setTo(from))
+export function exchangeFromTo() {
+  return (dispatch, getState) => {
+      const { from, to } = getState();
+      dispatch(setFrom(to));
+      dispatch(setTo(from));
+  };
+}
+
+// 异步获取城市数据
+export function fetchCityData() { 
+  return async(dispatch, getState) => { 
+    const { isLoadingCityData } = getState()
+    if (isLoadingCityData) { 
+      return
+    }
+    try {
+      let cacheCityData = JSON.parse(localStorage.getItem('cache_cityData') || '{}')
+      if (Date.now() < cacheCityData.expire) { 
+        dispatch(setCityData(cacheCityData.data))
+        return
+      }
+
+      dispatch(setIsLoadingCityData(true))
+      let data = await (await fetch('/api/citylist')).json()
+      dispatch(setIsLoadingCityData(false))
+      if (data && data.code === 200 && data.cityData) {
+        dispatch(setCityData(data.cityData))
+        
+        localStorage.setItem('cache_cityData', JSON.stringify({
+          expire: Date.now() + 60 * 1000 * 60 * 24,
+          data:data.cityData
+        }))
+      }
+    } catch (error) {
+      console.log(error)
+      dispatch(setIsLoadingCityData(false))
+    }
   }
+
 }
