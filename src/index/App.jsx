@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { connect } from 'react-redux'
 import React, { useCallback, useMemo } from 'react'
 import { bindActionCreators } from 'redux'
@@ -9,13 +10,19 @@ import DepartDate from './components/DepartDate'
 import HighSpeed from './components/HighSpeed'
 import Submit from './components/Submit'
 import CitySelector from '../common/components/CitySelector'
+import DateSelector from '../common/components/DateSelector'
+
 import {
   exchangeFromTo,
   showCitySelector,
   hideCitySelector,
   fetchCityData,
-  setSelectCity
+  setSelectCity,
+  showDateSelector,
+  hideDateSelector,
+  setDepartDate
 } from './redux/action'
+import { TimeUtil } from '../common/util'
 
 function App(props) { 
   const {
@@ -24,6 +31,8 @@ function App(props) {
     isCitySelectorVisible,
     cityData,
     isLoadingCityData,
+    departDate,
+    isDateSelectorVisible,
     dispatch
   } = props
   
@@ -51,7 +60,28 @@ function App(props) {
       fetchCityData,
       onSelect: setSelectCity
     }, dispatch)
-  },[dispatch])
+  }, [dispatch])
+  
+  const departDateCbs = useMemo(() => { 
+    return bindActionCreators({
+      onClick: showDateSelector
+    }, dispatch)
+  }, [])
+
+  const dateSelectorCbs = useMemo(() => { 
+    return bindActionCreators({
+      onBack: hideDateSelector
+    }, dispatch)
+  }, [dispatch])
+
+  const onSelectDate = useCallback((day) => { 
+    if (!day || day < TimeUtil.getDayTime().dayTimestamp) { 
+      return
+    }
+    dispatch(setDepartDate(day))
+    dispatch(hideDateSelector())
+
+  })
   
   return (
     <div>
@@ -59,20 +89,28 @@ function App(props) {
         <Header onBack={onBack} title="火车票"></Header>
       </div>
       <form className="form">
-      <Journey
-        from={from}
-          to={to}
-          {...cbs}
-      />
-        <DepartDate></DepartDate>
-        <HighSpeed></HighSpeed>
-        <Submit></Submit>
+        <Journey
+          from={from}
+            to={to}
+            {...cbs}
+        />
+          <DepartDate
+            time={departDate}
+            {...departDateCbs}
+          />
+          <HighSpeed></HighSpeed>
+          <Submit></Submit>
       </form>
       <CitySelector
         show={isCitySelectorVisible}
         cityData={cityData}
         isLoading={isLoadingCityData}
         {...citySelectorCbs}
+      />
+      <DateSelector
+        show={isDateSelectorVisible}
+        {...dateSelectorCbs}
+        onSelect={onSelectDate}
       />
     </div>
   )

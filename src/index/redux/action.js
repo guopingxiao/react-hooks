@@ -3,6 +3,7 @@ export const ACTION_SET_TO = 'SET_TO'
 export const ACTION_SET_IS_CITY_SELECTOR_VISIBLE = 'SET_IS_CITY_SELECTOR_VISIBLE'
 export const ACTION_SET_IS_SELECTING_LEFT_CITY = 'IS_SELECTING_LEFT_CITY'
 export const ACTION_SET_CITY_DATA = 'SET_CITY_DATA'
+export const ACTION_SET_DEPART_DATE = 'SET_DEPART_DATE'
 export const ACTION_SET_IS_LOADING_CITY_DATA = 'SET_IS_LOADING_CITY_DATA'
 export const ACTION_SET_IS_DATE_SELECTOR_VISIBLE = 'SET_IS_DATE_SELECTOR_VISIBLE'
 export const ACTION_SET_HIGH_SPEED = 'SET_HIGH_SPEED'
@@ -34,6 +35,14 @@ export function setCityData(cityData) {
     payload: cityData
   }
 }
+
+export function setDepartDate(departDate) {
+  return {
+      type: ACTION_SET_DEPART_DATE,
+      payload: departDate,
+  };
+}
+
 
 /** 高铁切换action, 异步action，依赖上一个state */
 export function toggleHighSpeed() { 

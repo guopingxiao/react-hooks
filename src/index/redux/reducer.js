@@ -7,6 +7,7 @@ import {
   ACTION_SET_IS_LOADING_CITY_DATA,
   ACTION_SET_IS_DATE_SELECTOR_VISIBLE,
   ACTION_SET_HIGH_SPEED,
+  ACTION_SET_DEPART_DATE
 } from './action'
 
 
@@ -71,6 +72,18 @@ export default {
     }
     return state
   },
+
+  departDate(state = Date.now(), action) {
+    const { type, payload } = action;
+    switch(type) {
+        case ACTION_SET_DEPART_DATE:
+            return payload;
+        default:
+    }
+
+    return state;
+  },
+  
   isDateSelectorVisible(state=false, action){
     const {type, payload } = action
     switch(type){
