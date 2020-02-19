@@ -20,7 +20,8 @@ import {
   setSelectCity,
   showDateSelector,
   hideDateSelector,
-  setDepartDate
+  setDepartDate,
+  toggleHighSpeed
 } from './redux/action'
 import { TimeUtil } from '../common/util'
 
@@ -33,6 +34,7 @@ function App(props) {
     isLoadingCityData,
     departDate,
     isDateSelectorVisible,
+    highSpeed,
     dispatch
   } = props
   
@@ -80,15 +82,20 @@ function App(props) {
     }
     dispatch(setDepartDate(day))
     dispatch(hideDateSelector())
-
   })
+
+  const highSpeedCbs = useMemo(() => { 
+    return bindActionCreators({
+      toggle: toggleHighSpeed
+    },dispatch)
+  },[])
   
   return (
     <div>
       <div className="header-wrapper">
         <Header onBack={onBack} title="火车票"></Header>
       </div>
-      <form className="form">
+      <form action="./query.html" className="form">
         <Journey
           from={from}
             to={to}
@@ -98,7 +105,10 @@ function App(props) {
             time={departDate}
             {...departDateCbs}
           />
-          <HighSpeed></HighSpeed>
+        <HighSpeed
+          highSpeed={highSpeed}
+          {...highSpeedCbs}
+        />
           <Submit></Submit>
       </form>
       <CitySelector
