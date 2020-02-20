@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect,useMemo } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import URI from 'urijs'
 import { TimeUtil } from '../common/util/index'
 import Nav from '../common/components/Nav'
@@ -21,7 +22,11 @@ import {
   setTicketTypes,
   setTrainTypes,
   prevDate,
-  nextDate
+  nextDate,
+  toggleHighSpeed,
+  toggleIsFiltersVisible,
+  toggleOnlyTickets,
+  toggleOrderType
 } from './redux/action'
 
 function App(props) { 
@@ -42,6 +47,7 @@ function App(props) {
     arriveTimeStart,
     arriveTimeEnd,
     trainList,
+    isFiltersVisible,
     dispatch
   } = props
 
@@ -121,6 +127,15 @@ function App(props) {
     nextClick
   } = useNav(departDate, dispatch, prevDate, nextDate)
 
+  const bottomCbs = useMemo(() => { 
+    return bindActionCreators({
+      toggleHighSpeed,
+      toggleIsFiltersVisible,
+      toggleOnlyTickets,
+      toggleOrderType
+    },dispatch)
+  }, [dispatch])
+
   if (!searchParsed) { 
     return null;
   }
@@ -137,7 +152,13 @@ function App(props) {
         nextClick = {nextClick}
         />
       <List list={trainList}/>
-      <Bottom />
+      <Bottom
+        highSpeed={highSpeed}
+        orderType={orderType}
+        onlyTickets={onlyTickets}
+        isFiltersVisible={isFiltersVisible}
+        {...bottomCbs}
+      />
     </div>
   )
 }
