@@ -1,7 +1,8 @@
 import React, {
   memo,
   useCallback,
-  useState
+  useState,
+  useMemo
 } from 'react'
 import PropTypes from 'prop-types'
 import './Bottom.css'
@@ -92,6 +93,16 @@ const BottomModal = memo(function BottomModal(props) {
       departTimeEnd,
       arriveTimeStart,
       arriveTimeEnd,
+
+      setCheckedTicketTypes,
+      setCheckedTrainTypes,
+      setCheckedDepartStations,
+      setCheckedArriveStations,
+      setDepartTimeStart,
+      setDepartTimeEnd,
+      setArriveTimeStart,
+      setArriveTimeEnd,
+      toggleIsFiltersVisible,
   } = props;
 
     const [localCheckedTicketTypes, setLocalCheckedTicketTypes] = useState(() => {
@@ -149,16 +160,58 @@ const BottomModal = memo(function BottomModal(props) {
           update: setLocalCheckedArriveStations,
       }
     ];
+  
+  function sure() { 
+    setCheckedTicketTypes(localCheckedTicketTypes)
+    setCheckedTrainTypes(localCheckedTrainTypes)
+    setCheckedDepartStations(localCheckedDepartStations)
+    setCheckedArriveStations(localCheckedArriveStations)
+
+    setDepartTimeStart(localDepartTimeStart)
+    setDepartTimeEnd(localDepartTimeEnd)
+    setArriveTimeStart(localDepartTimeStart)
+    setArriveTimeEnd(localArriveTimeEnd)
+
+    toggleIsFiltersVisible();
+  }
+
+  function reset() { 
+    if (isResetDisabled) { 
+        return
+    }
+    setLocalCheckedTicketTypes({})
+    setLocalCheckedTrainTypes({})
+    setLocalCheckedDepartStations({})
+    setLocalCheckedArriveStations({})
+
+    setLocalDepartTimeStart(0)
+    setLocalDepartTimeEnd(24)
+    setLocalArriveTimeEnd(24)
+    setLocalArriveTimeStart(0)
+  }
+
+  // 什么都没有选择，不能重置
+  const isResetDisabled = useMemo(()=> { 
+    return Object.keys(localCheckedTicketTypes).length === 0
+    && Object.keys(localCheckedTrainTypes).length === 0
+    && Object.keys(localCheckedDepartStations).length === 0
+    && Object.keys(localCheckedArriveStations).length === 0
+    && localDepartTimeStart === 0
+    && localDepartTimeEnd === 24
+    && localArriveTimeStart === 0
+    && localArriveTimeEnd === 24
+  },[localArriveTimeEnd, localArriveTimeStart, localCheckedArriveStations, localCheckedDepartStations, localCheckedTicketTypes, localCheckedTrainTypes, localDepartTimeEnd, localDepartTimeStart])
+  
 
   return (
       <div className="bottom-modal">
           <div className="bottom-dialog">
               <div className="bottom-dialog-content">
                   <div className="title">
-                      <span className="reset">
+            <span className={`reset ${isResetDisabled ? 'disabled': ''}`} onClick={reset}>
                           重置
                       </span>
-                      <span className="ok">
+            <span className="ok" onClick={sure}>
                           确定
                       </span>
                   </div>
@@ -244,6 +297,17 @@ export default function Bottom(props) {
     setArriveTimeStart,
     setArriveTimeEnd
   } = props
+
+  const noChecked = useMemo(()=> { 
+    return Object.keys(checkedTicketTypes).length === 0
+    && Object.keys(checkedTrainTypes).length === 0
+    && Object.keys(checkedDepartStations).length === 0
+    && Object.keys(checkedArriveStations).length === 0
+    && departTimeStart === 0
+    && departTimeEnd === 24
+    && arriveTimeStart === 0
+    && arriveTimeEnd === 24
+  },[arriveTimeEnd, arriveTimeStart, checkedArriveStations, checkedDepartStations, checkedTicketTypes, checkedTrainTypes, departTimeEnd, departTimeStart])
   
   return (
     <div className="bottom">
@@ -267,10 +331,10 @@ export default function Bottom(props) {
                 只看有票
             </span>
             <span
-                className={`item ${isFiltersVisible ? 'item-on' : ''}`}
+                className={`item ${isFiltersVisible || noChecked ? 'item-on' : ''}`}
                 onClick={toggleIsFiltersVisible}
             >
-                <i className="icon">{ '\uf0f7' }</i>
+                <i className="icon">{ noChecked ? '\uf0f7': '\uf446' }</i>
                 综合筛选
             </span>
       </div>
@@ -327,5 +391,13 @@ Bottom.propTypes = {
   departTimeStart: PropTypes.number.isRequired,
   departTimeEnd: PropTypes.number.isRequired,
   arriveTimeStart: PropTypes.number.isRequired,
-  arriveTimeEnd: PropTypes.number.isRequired
+  arriveTimeEnd: PropTypes.number.isRequired,
+  setCheckedTicketTypes: PropTypes.func.isRequired,
+  setCheckedTrainTypes: PropTypes.func.isRequired,
+  setCheckedDepartStations: PropTypes.func.isRequired,
+  setCheckedArriveStations: PropTypes.func.isRequired,
+  setDepartTimeStart: PropTypes.func.isRequired,
+  setDepartTimeEnd: PropTypes.func.isRequired,
+  setArriveTimeStart: PropTypes.func.isRequired,
+  setArriveTimeEnd: PropTypes.func.isRequired,
 };

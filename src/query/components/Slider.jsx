@@ -30,9 +30,23 @@ const Slider = memo(function Slider(props) {
     const range = useRef();
     const rangeWidth = useRef();
 
+    // 通过useRef 来缓存上次的state
+    const prevCurrentStartHours = useRef(currentStartHours)
+    let prevCurrentEndHours = useRef(currentEndHours)
+
     const [start, setStart]  = useState(() => currentStartHours / 24 * 100);
     const [end, setEnd]  = useState(() => currentEndHours / 24 * 100);
 
+    // 两次不一样，要更新 state,在内部setState有可能会死循环，谨慎使用
+    if (prevCurrentStartHours.current!== currentStartHours) { 
+        setStart((currentStartHours / 24) * 100)
+        prevCurrentStartHours.current = currentStartHours
+    }
+    if (prevCurrentEndHours.current!== currentEndHours) { 
+        setEnd((currentEndHours / 24) * 100)
+        prevCurrentEndHours.current = currentEndHours
+    }
+    
     // 右滑增大
     const startPercent = useMemo(() => {
         if (start > 100) {

@@ -27,7 +27,15 @@ import {
   toggleHighSpeed,
   toggleIsFiltersVisible,
   toggleOnlyTickets,
-  toggleOrderType
+  toggleOrderType,
+  setCheckedTicketTypes,
+  setCheckedTrainTypes,
+  setCheckedDepartStations,
+  setCheckedArriveStations,
+  setDepartTimeStart,
+  setDepartTimeEnd,
+  setArriveTimeStart,
+  setArriveTimeEnd
 } from './redux/action'
 
 function App(props) { 
@@ -138,6 +146,14 @@ function App(props) {
       toggleIsFiltersVisible,
       toggleOnlyTickets,
       toggleOrderType,
+      setCheckedTicketTypes,
+      setCheckedTrainTypes,
+      setCheckedDepartStations,
+      setCheckedArriveStations,
+      setDepartTimeStart,
+      setDepartTimeEnd,
+      setArriveTimeStart,
+      setArriveTimeEnd,
     },dispatch)
   }, [dispatch])
 
