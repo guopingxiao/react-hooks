@@ -2,11 +2,11 @@ import React, { useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
 import URI from 'urijs'
 import { TimeUtil } from '../common/util/index'
-import useNav from '../common/components/Nav.js'
+import Nav from '../common/components/Nav'
+import useNav from '../common/components/useNav'
 
 import './App.css'
 import Header from '../common/components/Header'
-import Nav from '../common/components/Nav'
 import List from './components/List'
 import Bottom from './components/Bottom'
 import {
@@ -41,6 +41,7 @@ function App(props) {
     departTimeEnd,
     arriveTimeStart,
     arriveTimeEnd,
+    trainList,
     dispatch
   } = props
 
@@ -127,16 +128,15 @@ function App(props) {
     <div>
       <div className="header-wrapper">
         <Header title={`${from}→${to}`} onBack={onBack} />
-        <Nav
-          date={departDate}
-          isPrevDisabled = {isPrevDisabled}
-          isNextDisabled = {isNextDisabled}
-          prevClick = {prevClick}
-          nextClick = {nextClick}
-        />
       </div>
-      <Nav />
-      <List />
+      <Nav
+        date={departDate}
+        isPrevDisabled = {isPrevDisabled}
+        isNextDisabled = {isNextDisabled}
+        prevClick = {prevClick}
+        nextClick = {nextClick}
+        />
+      <List list={trainList}/>
       <Bottom />
     </div>
   )
