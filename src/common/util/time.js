@@ -29,6 +29,11 @@ export function getDayTime(timestamp = Date.now(), format='YYYY-MM-DD') {
   }
 }
 
+export function getCurrentMonthDay(date) { 
+  const d = dayjs(date)
+  return d.format('M月D日') + d.locale('zh-ch').format('ddd')
+}
+
 /**
  * 返回格式化日期的时间戳 如2020-02-02
  * @param {*} formatDate 

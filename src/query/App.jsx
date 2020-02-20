@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
 import URI from 'urijs'
 import { TimeUtil } from '../common/util/index'
+import useNav from '../common/components/Nav.js'
 
 import './App.css'
 import Header from '../common/components/Header'
@@ -18,7 +19,9 @@ import {
   setDepartStations,
   setTrainList,
   setTicketTypes,
-  setTrainTypes
+  setTrainTypes,
+  prevDate,
+  nextDate
 } from './redux/action'
 
 function App(props) { 
@@ -110,13 +113,27 @@ function App(props) {
     
   }, [searchParsed, from, to, departDate, highSpeed, orderType, onlyTickets, checkedTicketTypes, checkedTrainTypes, checkedDepartStations, checkedArriveStations, departTimeStart, departTimeEnd, arriveTimeStart, arriveTimeEnd, dispatch])
 
+  const {
+    isPrevDisabled,
+    isNextDisabled,
+    prevClick,
+    nextClick
+  } = useNav(departDate, dispatch, prevDate, nextDate)
+
   if (!searchParsed) { 
     return null;
   }
   return (
     <div>
       <div className="header-wrapper">
-        <Header title={`${from}→${to}`} onBack={onBack}/>
+        <Header title={`${from}→${to}`} onBack={onBack} />
+        <Nav
+          date={departDate}
+          isPrevDisabled = {isPrevDisabled}
+          isNextDisabled = {isNextDisabled}
+          prevClick = {prevClick}
+          nextClick = {nextClick}
+        />
       </div>
       <Nav />
       <List />

@@ -198,7 +198,7 @@ export function nextDate() {
   return (dispatch, getState) => {
       const { departDate } = getState();
 
-      dispatch(setDepartDate(TimeUtil.getDayTime(departDate).dayTimestam + 24*60*60 * 1000));
+      dispatch(setDepartDate(TimeUtil.getDayTime(departDate).dayTimestamp + 24*60*60 * 1000));
   };
 }
 
