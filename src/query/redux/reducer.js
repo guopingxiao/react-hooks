@@ -60,6 +60,9 @@ export default {
     switch(type){
       case ACTION_SET_HIGHSPEED:
         return payload
+      case ACTION_SET_CHECKEDTRAINTYPES:
+        const checkedTrainTypes = payload;
+        return Boolean(checkedTrainTypes[1] && checkedTrainTypes[5])
       default:
     }
     return state
@@ -123,6 +126,18 @@ export default {
     switch(type){
       case ACTION_SET_CHECKEDTRAINTYPES:
         return payload
+      case ACTION_SET_HIGHSPEED:  // 如果选中了 高铁的底部按钮、筛选框也要选中哦
+        const highSpeed = payload
+        const newCheckedTrainTypes = { ...state }
+        
+        if (highSpeed) {
+          newCheckedTrainTypes[1] = true // 高铁
+          newCheckedTrainTypes[5] = true // 动车
+        } else { 
+          delete newCheckedTrainTypes[1] 
+          delete newCheckedTrainTypes[5]
+        }
+        return newCheckedTrainTypes
       default:
     }
     return state
