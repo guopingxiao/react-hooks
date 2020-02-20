@@ -2,7 +2,7 @@ const Koa = require('koa')
 const router = require('koa-router')();
 const cityData = require('./api/citylist.json')
 const searchJson = require('./api/search.json')
-
+const queryJson = require('./api/query.json')
 const app = new Koa()
 
 
@@ -13,8 +13,13 @@ router.get('/api/citylist', async function (ctx, next) {
     cityData: cityData
   }
 })
+
 router.get('/api/search', async function (ctx, next) { 
   ctx.body = searchJson
+})
+
+router.get('/api/query', async function (ctx, next) { 
+  ctx.body = queryJson
 })
 
 

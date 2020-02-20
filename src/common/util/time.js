@@ -1,5 +1,10 @@
 import dayjs from 'dayjs'
 
+/**
+ * 返回去除时分秒毫秒的时间戳，2020-02-02 周四
+ * @param {*} timestamp 
+ * @param {*} format 
+ */
 export function getDayTime(timestamp = Date.now(), format='YYYY-MM-DD') { 
   
   const date = new Date(timestamp)
@@ -12,16 +17,24 @@ export function getDayTime(timestamp = Date.now(), format='YYYY-MM-DD') {
   timestamp = date.getTime()
 
   let dayTimeFormat = dayjs(timestamp).format(format)
-  let departDate = new Date(timestamp)
-  let departDay = departDate.getDay()
+  let formatTime = new Date(timestamp)
+  let formatDay = formatTime.getDay()
 
-  let weekDay = '周' + ['日', '一', '二', '三', '四', '五', '六'][departDay]
+  let weekDay = '周' + ['日', '一', '二', '三', '四', '五', '六'][formatDay]
 
   return {
-    departDate: dayTimeFormat,
+    dayTimeFormat,
     weekDay,
     dayTimestamp: timestamp,
   }
+}
+
+/**
+ * 返回格式化日期的时间戳 如2020-02-02
+ * @param {*} formatDate 
+ */
+export function getFormatDayTime(formatDate) { 
+  return getDayTime(dayjs(formatDate).valueOf()).dayTimestamp
 }
 
 /**
@@ -45,7 +58,6 @@ export function getMonthTimeStamps(timestamp = Date.now(), months = 3) {
   }
 
   return monthTimeStamps
-  
 }
 
 /**

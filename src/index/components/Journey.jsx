@@ -17,7 +17,7 @@ export default function Journey(props) {
         <input
           type="text"
           readOnly
-          name="from"
+          name="fromcity"
           value={from}
           className="journey-input journey-from"
           onClick={() => showCitySelector(true)}

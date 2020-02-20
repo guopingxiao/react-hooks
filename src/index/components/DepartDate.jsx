@@ -12,7 +12,7 @@ export default function DepartDate(props) {
 
   let {
     dayTimestamp,
-    departDate,
+    dayTimeFormat,
     weekDay
   } = TimeUtil.getDayTime(time)
 
@@ -21,8 +21,8 @@ export default function DepartDate(props) {
 
   return (
     <div className="depart-date" onClick={onClick}>
-      <input type="hidden" name="date" value={departDate} />
-      {departDate}
+      <input type="hidden" name="date" value={dayTimeFormat} />
+      {dayTimeFormat}
       <span className="depart-week">{weekDay}</span>
     </div>
   )
