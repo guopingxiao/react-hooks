@@ -1,7 +1,7 @@
 import React, {
   memo,
-  useCallback,
   useState,
+  useReducer,
   useMemo
 } from 'react'
 import PropTypes from 'prop-types'
@@ -9,16 +9,39 @@ import './Bottom.css'
 import Slider from './Slider'
 import { ORDER_DEPART } from '../redux/constant'
 
+const RESET_TYPE = 'reset'
+const TOGGLE_TYPE = 'toggle'
+
+// 定义组件内的reducer 供各个组件自己使用；
+function checkedReducer(state, action) { 
+  const { type, payload } = action
+  switch (type) { 
+    case TOGGLE_TYPE:
+      const newState = { ...state }
+      if (payload in newState) {
+        delete newState[payload]
+      } else { 
+        newState[payload] = true
+      }
+      return newState
+    case RESET_TYPE:
+      return {}
+    default:
+
+  return state
+  }
+}
+
 const Filter = memo(function Filter(props) {
   const {
       name,
       checked,
       value,
-      toggle,
+      dispatch,
   } = props;
 
   return (
-      <li className={`${checked? 'checked': ''}`} onClick={() => toggle(value)}>
+    <li className={`${checked ? 'checked' : ''}`} onClick={() => dispatch({payload: value, type:TOGGLE_TYPE})}>
           { name }
       </li>
   );
@@ -27,7 +50,7 @@ Filter.propTypes = {
   name: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
-  toggle: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 // 筛选框单个筛选类目
@@ -36,22 +59,8 @@ const Option = memo(function Option(props) {
       title,
       options,
       checkedMap,
-      update,
+      dispatch,
   } = props;
-
-  // 定义选择切换函数，传递给Filter组件，因为有没有选中，需要Option组件的checkMap组件确认；定义新的newCheckedMap判断
-  const toggle = useCallback((value) => { // value为 Filter组件传递的值
-    const newCheckedMap = {...checkedMap};
-
-    if (value in checkedMap) { // 去除选择
-        delete newCheckedMap[value];
-    } else {
-        newCheckedMap[value] = true; // 选择
-    }
-
-    update(newCheckedMap); // 调用setLocalCheckMaps来更新Option组件的state
-  }, [checkedMap, update]);
-
 
   return (
       <div className="option">
@@ -64,7 +73,7 @@ const Option = memo(function Option(props) {
                           key={option.value}
                           {...option}
                           checked={option.value in checkedMap}
-                          toggle={toggle}/>
+                          dispatch={dispatch}/>
                   );
               })
           }
@@ -105,25 +114,30 @@ const BottomModal = memo(function BottomModal(props) {
       toggleIsFiltersVisible,
   } = props;
 
-    const [localCheckedTicketTypes, setLocalCheckedTicketTypes] = useState(() => {
+  // useReducer 第三个函数 为返回异步action,不传为同步reducer
+  const [localCheckedTicketTypes, localCheckedTicketTypesDispatch]
+    = useReducer(checkedReducer, checkedTicketTypes, (checkedTicketTypes) => {
         return {
             ...checkedTicketTypes,
         };
     });
 
-    const [localCheckedTrainTypes, setLocalCheckedTrainTypes] = useState(() => {
+const [localCheckedTrainTypes, localCheckedTrainTypesDispatch]
+  = useReducer(checkedReducer, checkedTrainTypes, (checkedTrainTypes) => {
       return {
           ...checkedTrainTypes,
       };
   });
 
-    const [localCheckedDepartStations, setLocalCheckedDepartStations] = useState(() => {
+const [localCheckedDepartStations, localCheckedDepartStationsDispatch]
+  = useReducer(checkedReducer, checkedDepartStations, (checkedDepartStations) => {
         return {
             ...checkedDepartStations,
         };
     });
 
-    const [localCheckedArriveStations, setLocalCheckedArriveStations] = useState(() => {
+const [localCheckedArriveStations, localCheckedArriveStationsDispatch]
+  = useReducer(checkedReducer, checkedArriveStations, (checkedArriveStations) => {
         return {
             ...checkedArriveStations,
         };
@@ -139,25 +153,25 @@ const BottomModal = memo(function BottomModal(props) {
           title: '坐席类型',
           options: ticketTypes,
           checkedMap: localCheckedTicketTypes,
-          update: setLocalCheckedTicketTypes,
+          dispatch: localCheckedTicketTypesDispatch,
       },
       {
           title: '车次类型',
           options: trainTypes,
           checkedMap: localCheckedTrainTypes,
-          update: setLocalCheckedTrainTypes,
+          dispatch: localCheckedTrainTypesDispatch,
       },
       {
           title: '出发车站',
           options: departStations,
           checkedMap: localCheckedDepartStations,
-          update: setLocalCheckedDepartStations
+          dispatch: localCheckedDepartStationsDispatch
       },
       {
           title: '到达车站',
           options: arriveStations,
           checkedMap: localCheckedArriveStations,
-          update: setLocalCheckedArriveStations,
+          dispatch: localCheckedArriveStationsDispatch,
       }
     ];
   
@@ -179,10 +193,10 @@ const BottomModal = memo(function BottomModal(props) {
     if (isResetDisabled) { 
         return
     }
-    setLocalCheckedTicketTypes({})
-    setLocalCheckedTrainTypes({})
-    setLocalCheckedDepartStations({})
-    setLocalCheckedArriveStations({})
+    localCheckedTicketTypesDispatch({type: RESET_TYPE})
+    localCheckedTrainTypesDispatch({type: RESET_TYPE})
+    localCheckedDepartStationsDispatch({type: RESET_TYPE})
+    localCheckedArriveStationsDispatch({type: RESET_TYPE})
 
     setLocalDepartTimeStart(0)
     setLocalDepartTimeEnd(24)
