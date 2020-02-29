@@ -6,6 +6,7 @@ const queryJson = require('./api/query.json')
 const queryChangeJson = require('./api/query-change.json')
 const ticketJson = require('./api/ticket.json')
 const scheduleJson = require('./api/schedule.json')
+const orderJson = require('./api/order.json')
 
 const app = new Koa()
 
@@ -24,11 +25,18 @@ router.get('/api/search', async function (ctx, next) {
 })
 
 router.get('/api/query', async function (ctx, next) {
-  if (++queryCount%2) { 
-    ctx.body = queryJson
-    return 
+  let result
+  if (++queryCount % 2) {
+    result = queryJson
+  } else { 
+    result = queryChangeJson
   }
-  ctx.body = queryChangeJson
+  let trains = result.dataMap.directTrainInfo.trains
+  result.dataMap.directTrainInfo.trains = trains.map(item => {
+    item.date = ctx.query.date
+    return item
+  })
+  ctx.body = result
 })
 
 router.get('/api/ticket', async function (ctx, next) {
@@ -37,6 +45,10 @@ router.get('/api/ticket', async function (ctx, next) {
 
 router.get('/api/schedule', async function (ctx, next) {
   ctx.body = scheduleJson
+})
+
+router.get('/api/order', async function (ctx, next) {
+  ctx.body = orderJson
 })
 
 

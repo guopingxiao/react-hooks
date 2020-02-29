@@ -72,6 +72,8 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
+    "analyzer": "export BUNDLE_ANALYZER=true && yarn run build",
+    "server": "node server/app.js",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
@@ -146,5 +148,8 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "webpack-bundle-analyzer": "^3.6.0"
+  }
 }

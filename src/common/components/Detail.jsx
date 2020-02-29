@@ -45,7 +45,7 @@ function Detail(props) {
 
 Detail.propTypes = {
   departDate: PropTypes.number.isRequired,
-  arriveDate: PropTypes.number.isRequired,
+  arriveDate: PropTypes.number,
   departTimeStr: PropTypes.string,
   arriveTimeStr: PropTypes.string,
   trainNumber: PropTypes.string.isRequired,
