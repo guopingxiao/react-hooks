@@ -1,5 +1,15 @@
 import dayjs from 'dayjs'
 
+export const MS_OF_DAY = 24*60*60*1000
+
+/**
+ * 将时间戳格式化为标准格式
+ * @param {*} date 
+ * @param {*} rule 
+ */
+export function formatDate(date, rule = 'YYYY-MM-DD') { 
+  return dayjs(date).format(rule)
+}
 /**
  * 返回去除时分秒毫秒的时间戳，2020-02-02 周四
  * @param {*} timestamp 

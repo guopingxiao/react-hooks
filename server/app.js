@@ -4,6 +4,9 @@ const cityData = require('./api/citylist.json')
 const searchJson = require('./api/search.json')
 const queryJson = require('./api/query.json')
 const queryChangeJson = require('./api/query-change.json')
+const ticketJson = require('./api/ticket.json')
+const scheduleJson = require('./api/schedule.json')
+
 const app = new Koa()
 
 let queryCount = 0
@@ -26,7 +29,14 @@ router.get('/api/query', async function (ctx, next) {
     return 
   }
   ctx.body = queryChangeJson
+})
 
+router.get('/api/ticket', async function (ctx, next) {
+  ctx.body = ticketJson
+})
+
+router.get('/api/schedule', async function (ctx, next) {
+  ctx.body = scheduleJson
 })
 
 
